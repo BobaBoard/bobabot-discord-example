@@ -4,11 +4,12 @@ An example of building a Discord Bot that publishes URLs sent to a channel
 as a new thread in a board.
 
 This is a very barebone example that is missing some features that would be
-necessary for real-world usage, but should give people an idea of how to
-interact with the BobaBoard API.
+necessary for real-world usage (like authentication refresh), but should give people
+an idea of how to interact with the BobaBoard API, and a sample bot to start from.
 
 To use this, you'll need to independently configure a BobaBoard instance (including
-firebase authentication) and a Discord bot.
+firebase authentication) and a Discord bot. As long as you have everything you need
+to fill the `.env` file details below, you can run this bot.
 
 > [!NOTE]
 > If you want to check what API endpoints are available for your BobaBoard
