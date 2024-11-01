@@ -49,13 +49,20 @@ client.on(Events.MessageCreate, async (message) => {
     return;
   }
 
-  const postingResult = await postUrlToBoard({
-    boardId: POSTING_BOARD_ID,
-    url: messageUrl,
-  });
-  console.log(
-    `Posted message in thread with id ${postingResult.id} in board !${postingResult.parent_board_slug}`
-  );
-
-  await message.react("✅");
+  try {
+    const postingResult = await postUrlToBoard({
+      boardId: POSTING_BOARD_ID,
+      url: messageUrl,
+    });
+    console.log(
+      `Posted message in thread with id ${postingResult.id} in board !${postingResult.parent_board_slug}`
+    );
+    await message.react("✅");
+  } catch (e) {
+    console.error(
+      `There was an error publishing ${messageUrl} to board ${POSTING_BOARD_ID}`
+    );
+    console.info(e);
+    await message.react("❌");
+  }
 });

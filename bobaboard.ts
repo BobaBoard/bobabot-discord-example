@@ -65,6 +65,9 @@ export const postUrlToBoard = async (params: {
     }
   );
 
+  if (!postingResponse.ok) {
+    throw new Error(`Posting failed with error ${postingResponse.status}`);
+  }
   return await postingResponse.json();
 };
 
