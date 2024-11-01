@@ -1,5 +1,4 @@
-import admin from "firebase-admin";
-import { getAuth, signInWithCustomToken } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 
 const FIREBASE_CLIENT_CONFIG = {
@@ -14,21 +13,13 @@ const getFirebaseAuthToken = async () => {
     // TODO: This needs logic for when the token is here but is expired
     return userAuthToken;
   }
-  const firebaseAdminApp = admin.initializeApp({
-    credential: admin.credential.cert("./service-account-key.json"),
-  });
   const firebaseClientApp = initializeApp(FIREBASE_CLIENT_CONFIG);
   const firebaseClientAuth = getAuth(firebaseClientApp);
 
-  const userRecord = await firebaseAdminApp
-    .auth()
-    .getUserByEmail("contacts@fujocoded.com");
-  const customToken = await firebaseAdminApp
-    .auth()
-    .createCustomToken(userRecord.uid);
-  const userCredentials = await signInWithCustomToken(
+  const userCredentials = await signInWithEmailAndPassword(
     firebaseClientAuth,
-    customToken
+    process.env.USER_EMAIL!,
+    process.env.USER_PASSWORD!
   );
 
   userAuthToken = await userCredentials.user.getIdToken(true);
