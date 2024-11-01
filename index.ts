@@ -2,9 +2,6 @@ import dotenv from "dotenv";
 import { getRealmBoards, postUrlToBoard } from "./bobaboard";
 import { Client, Events, GatewayIntentBits, Message } from "discord.js";
 
-const POSTING_BOARD_ID = "4b30fb7c-2aca-4333-aa56-ae8623a92b65";
-const DISCORD_CHANNEL_NAME = "bot";
-
 dotenv.config();
 
 // Uncommonent this API call to see what the IDs of the
@@ -36,7 +33,7 @@ client.on(Events.MessageCreate, async (message) => {
   if (
     message.author.bot ||
     !("name" in message.channel) ||
-    message.channel.name !== DISCORD_CHANNEL_NAME
+    message.channel.name !== process.env.DISCORD_CHANNEL_NAME
   ) {
     return;
   }
@@ -51,7 +48,7 @@ client.on(Events.MessageCreate, async (message) => {
 
   try {
     const postingResult = await postUrlToBoard({
-      boardId: POSTING_BOARD_ID,
+      boardId: process.env.POSTING_BOARD_ID!,
       url: messageUrl,
     });
     console.log(
@@ -60,7 +57,7 @@ client.on(Events.MessageCreate, async (message) => {
     await message.react("✅");
   } catch (e) {
     console.error(
-      `There was an error publishing ${messageUrl} to board ${POSTING_BOARD_ID}`
+      `There was an error publishing ${messageUrl} to board ${process.env.POSTING_BOARD_ID}`
     );
     console.info(e);
     await message.react("❌");
