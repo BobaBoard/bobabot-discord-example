@@ -10,6 +10,12 @@ interact with the BobaBoard API.
 To use this, you'll need to independently configure a BobaBoard instance (including
 firebase authentication) and a Discord bot.
 
+> [!NOTE]
+> If you want to check what API endpoints are available for your BobaBoard
+> server, (e.g. to add functionality for the bot), you can go to its `/api-docs`
+> endpoint for a visual documentation. If it's running locally, that would be
+> `http://localhost:4200/api-docs`.
+
 ## Creating `.env` file for configuration
 
 > [!WARNING]
