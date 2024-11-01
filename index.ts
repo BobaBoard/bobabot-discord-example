@@ -11,6 +11,13 @@ dotenv.config();
 // boards in your realm are.
 // await getRealmBoards({ realmSlug: "twisted-minds" });
 
+const extractUrl = (message: string) => {
+  const urlPattern =
+    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/i;
+  // We get the first URL matched or null if nothing was matched
+  return message.match(urlPattern)?.[0] ?? null;
+};
+
 // Create Discord client
 const client = new Client({
   intents: [
@@ -36,10 +43,19 @@ client.on(Events.MessageCreate, async (message) => {
 
   console.log(`Received message: ${message.content}`);
 
+  const messageUrl = extractUrl(message.content);
+  if (!messageUrl) {
+    console.log(`No URL found in ${message.content}`);
+    return;
+  }
+
+  const postingResult = await postUrlToBoard({
+    boardId: POSTING_BOARD_ID,
+    url: messageUrl,
+  });
   console.log(
-    await postUrlToBoard({
-      boardId: POSTING_BOARD_ID,
-      url: "https://www.bobaboard.com",
-    })
+    `Posted message in thread with id ${postingResult.id} in board !${postingResult.parent_board_slug}`
   );
+
+  await message.react("✅");
 });
