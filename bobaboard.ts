@@ -8,9 +8,14 @@ const FIREBASE_CLIENT_CONFIG = {
 };
 
 let userAuthToken: string;
-const getFirebaseAuthToken = async () => {
-  if (userAuthToken) {
-    // TODO: This needs logic for when the token is here but is expired
+const getFirebaseAuthToken = async (
+  {
+    forceRefresh,
+  }: {
+    forceRefresh: boolean;
+  } = { forceRefresh: false }
+) => {
+  if (userAuthToken && !forceRefresh) {
     return userAuthToken;
   }
   const firebaseClientApp = initializeApp(FIREBASE_CLIENT_CONFIG);
@@ -26,12 +31,33 @@ const getFirebaseAuthToken = async () => {
   return userAuthToken;
 };
 
+const fetchWithAuthRetry = async (...params: Parameters<typeof fetch>) => {
+  const response = await fetch(...params);
+
+  if (!response.ok) {
+    const [url, init] = params;
+    if (response.status == 401) {
+      // Refresh authentication and retry
+      console.log("Refreshing authentication");
+      return fetchWithAuthRetry(url, {
+        ...init,
+        headers: {
+          ...(init?.headers ?? {}),
+          Authorization: await getFirebaseAuthToken({ forceRefresh: true })!,
+        },
+      });
+    }
+    throw new Error(`Posting failed with error ${response.status}`);
+  }
+  return response;
+};
+
 export const postUrlToBoard = async (params: {
   boardId: string;
   url: string;
   // tags...
 }) => {
-  const postingResponse = await fetch(
+  const postingResponse = await fetchWithAuthRetry(
     new URL(`/boards/${params.boardId}`, process.env.BOBABOARD_SERVER_URL),
     {
       method: "POST",
@@ -63,7 +89,7 @@ export const postUrlToBoard = async (params: {
 };
 
 export const getRealmBoards = async (params: { realmSlug: string }) => {
-  const allBoardsResponse = await fetch(
+  const allBoardsResponse = await fetchWithAuthRetry(
     new URL(
       `/realms/slug/${params.realmSlug}`,
       process.env.BOBABOARD_SERVER_URL

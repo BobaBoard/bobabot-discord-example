@@ -4,12 +4,18 @@ An example of building a Discord Bot that publishes URLs sent to a channel
 as a new thread in a board.
 
 This is a very barebone example that is missing some features that would be
-necessary for real-world usage (like authentication refresh), but should give people
-an idea of how to interact with the BobaBoard API, and a sample bot to start from.
+necessary for real-world usage with many servers, but should give people an idea
+of how to interact with the BobaBoard API, and it should be usable if you want
+to invite the bot directly to servers you own or trust!
 
-To use this, you'll need to independently configure a BobaBoard instance (including
-firebase authentication) and a Discord bot. As long as you have everything you need
-to fill the `.env` file details below, you can run this bot.
+To use this, you'll need to independently configure a BobaBoard instance
+(including firebase authentication) and set up a Discord bot. For the first, you
+can find our current best-effort guide in the [BobaBoard
+documentation](https://docs.bobaboard.com/docs/users/self-hosting/server-setup)
+and take a look at
+[Discord.js](https://discordjs.guide/preparations/setting-up-a-bot-application.html)
+As long as you have everything you need to fill the `.env` file details below,
+you can run this bot!
 
 > [!NOTE]
 > If you want to check what API endpoints are available for your BobaBoard
